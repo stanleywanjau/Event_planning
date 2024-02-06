@@ -140,12 +140,84 @@ class Guests(Resource):
 
         return {"message": "Guest created successfully", "guest_id": guest.id}, 201
         
-            
-            
+class GuestById(Resource):
+    def get(self,id):
+        guest=Guest.query.filter_by(id=id).first()
+        
+        if not guest:
+            return make_response(jsonify({"message":"Guest not found"}),404)
+        guest_data={
+            "id":guest.id,
+            "name":guest.name,
+            "status":guest.status,
+            "events":[]
+        }
+        if guest.events:
+            for event in guest.events:
+                event_data={
+                    "id":event.id,
+                    "title":event.title,
+                    "location":event.location
+                }
+                guest_data["events"].append(event_data)
+        else:
+            guest_data["message"] = "This guest is not invited in any events."
+        
+        return make_response(jsonify(guest_data),200)
+    def patch(self, id):
+        data = request.json
+        new_status = data.get('status')
+
+        if new_status != 'confirmed':
+            return {"message": "Only 'confirmed' status is allowed for accepting invites"}, 400
+
+        guest = Guest.query.get(id)
+
+        if not guest:
+            return {"message": "Guest not found"}, 404
+
+        if guest.status != 'invited':
+            return {"message": "Guest has already confirmed the invite"}, 400
+
+        guest.status = new_status
+        db.session.commit()
+
+        return {"message": "Guest has accepted the invite", "guest_id": guest.id}, 200
+    def delete(self,id):
+        guest=Guest.query.filter_by(id=id).first()
+        
+        if not guest:
+            return make_response(jsonify({"message":"Guest not found"}),404)
+        
+        db.session.delete(guest)
+        db.session.commit()
+        
+        return make_response(jsonify({}),200)
+class EventGuest(Resource):
+    def post(self, event_id, guest_id):
+        event = Event.query.get(event_id)
+        guest = Guest.query.get(guest_id)
+
+        if not event:
+            return {"message": "Event not found"}, 404
+        if not guest:
+            return {"message": "Guest not found"}, 404
+
+        # Check if the guest is already associated with the event
+        if guest in event.guests:
+            return {"message": "Guest is already associated with the event"}, 400
+
+        event.guests.append(guest)
+        db.session.commit()
+
+        return {"message": "Guest added to the event successfully"}, 200
+        
             
 api.add_resource(Events,'/events')
 api.add_resource(EventsById,'/event/<int:id>')
 api.add_resource(Guests,"/guests")
+api.add_resource(GuestById,"/guest/<int:id>")
+api.add_resource(EventGuest, "/event/<int:event_id>/guest/<int:guest_id>")
 
 
 
