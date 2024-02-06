@@ -1,4 +1,4 @@
-// Auth/Auth.js
+
 import React, { useState } from 'react';
 
 const Login = ({ onLogin }) => {
@@ -6,9 +6,9 @@ const Login = ({ onLogin }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Implement logic to handle user login
+   
 
-    onLogin(); // uhm this should notify the parent component about successful login
+    onLogin(); //  this should notify the parent component about successful login
   };
 
   return (
@@ -32,8 +32,9 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // backend needed/
   const handleRegister = () => {
-    // Implement logic to handle user registration
+    
   
   };
 
@@ -58,10 +59,8 @@ const Register = () => {
 
 const Logout = ({ onLogout }) => {
   const handleLogout = () => {
-    // Implement logic to handle user logout
-    // You may want to send a request to the backend to invalidate the token
-    // and handle the response accordingly
-    onLogout(); // Notify the parent component about successful logout
+    
+    onLogout(); 
   };
 
   return (

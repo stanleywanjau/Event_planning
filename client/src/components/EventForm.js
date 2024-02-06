@@ -1,4 +1,4 @@
-// EventForm.js
+
 import React, { useState } from 'react';
 
 const EventForm = ({ onSubmit }) => {
@@ -9,8 +9,8 @@ const EventForm = ({ onSubmit }) => {
     e.preventDefault();
     const newEvent = { title, details };
     onSubmit(newEvent); // Pass the new event to the parent component
-    // You can also send a request to the backend to create the event
-    // and handle the response accordingly
+    //backend needed
+    
   };
 
   return (

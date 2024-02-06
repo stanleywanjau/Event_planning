@@ -1,4 +1,4 @@
-// EventDetails.js
+
 import React from 'react';
 //  my eventdetails for the event details page
 const EventDetails = () => {
