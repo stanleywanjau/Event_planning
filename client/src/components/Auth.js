@@ -6,7 +6,7 @@ const Login = ({ onLogin }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Implement logic to handle user login
+   
 
     onLogin(); // uhm this should notify the parent component about successful login
   };
