@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
+from datetime import datetime
 
 from models import db,User,Event
 
@@ -17,6 +18,39 @@ class Events(Resource):
         event=[{'id':event.id,"title":event.title,"location":event.location} for event in Event.query.all()]
         
         return make_response(jsonify(event),200)
+    def post(self):
+        data=request.json
+        title = data['title']
+        location=data['location']
+        date = data['date']
+        time =data['time']  
+        user_id=data['user_id'] 
+        
+        
+        # Validate required fields
+        if not (title and location and date and time and user_id):
+            return {"message": "Missing required fields"}, 400
+
+        # Parse date and time strings into datetime objects
+        try:
+            date = datetime.strptime(date, '%Y-%m-%d').date()
+            time = datetime.strptime(time, '%H:%M:%S').time()
+        except ValueError:
+            return {"message": "Invalid date or time format"}, 400
+
+        # Check if the user exists
+        user = User.query.get(user_id)
+        if not user:
+            return {"message": "User not found"}, 404
+
+        # Create the event object
+        event = Event(title=title, location=location, date=date, time=time, user=user)
+
+        # Add the event to the database session and commit
+        db.session.add(event)
+        db.session.commit()
+
+        return {"message": "Event created successfully", "event_id": event.id}, 201
 
 
 class EventsById(Resource):
@@ -44,7 +78,7 @@ class EventsById(Resource):
             event_data["guests"].append(guest_data)
         
         return make_response(jsonify(event_data),200)
-        
+            
 api.add_resource(Events,'/events')
 api.add_resource(EventsById,'/event/<int:id>')
 
