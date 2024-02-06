@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from datetime import datetime
 
-from models import db,User,Event
+from models import db,User,Event,Guest
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///Eventplanner.db'
@@ -116,10 +116,36 @@ class EventsById(Resource):
             db.session.commit()
 
             return {"message": "Event updated successfully"}, 200
+
+
+
+
+class Guests(Resource):
+    def get(self):
+        guests =[ {"id":guest.id,"name":guest.name,"email":guest.email,"status":guest.status}for guest in Guest.query.all()]
+        return make_response(jsonify(guests),200)
+    def post(self):
+        data = request.json
+        name = data.get('name')
+        email = data.get('email')
+        status = data.get('status', 'invited')  # Default status to 'invited' if not provided
+
+        if not (name and email):
+            return {"message": "Name and email are required fields"}, 400
+
+        guest = Guest(name=name, email=email, status=status)
+
+        db.session.add(guest)
+        db.session.commit()
+
+        return {"message": "Guest created successfully", "guest_id": guest.id}, 201
+        
+            
             
             
 api.add_resource(Events,'/events')
 api.add_resource(EventsById,'/event/<int:id>')
+api.add_resource(Guests,"/guests")
 
 
 
