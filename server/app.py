@@ -12,7 +12,13 @@ migrate=Migrate(app,db)
 db.init_app(app)
 api = Api(app)
 
-
+class Events(Resource):
+    def get(self):
+        event=[{'id':event.id,"title":event.title,"location":event.location} for event in Event.query.all()]
+        
+        return make_response(jsonify(event),200)
+        
+api.add_resource(Events,'/events')
 
 
 
