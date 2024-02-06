@@ -4,6 +4,16 @@ from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
 
+
+guest_event_association = db.Table('guest_event_association',
+    db.Column('guest_id', db.Integer, db.ForeignKey('guest.id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))
+)
+
+user_guest_association = db.Table('user_guest_association',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('guest_id', db.Integer, db.ForeignKey('guest.id'))
+)
 class User(db.Model, SerializerMixin):
     __tablename__ = "user"
   
@@ -15,7 +25,7 @@ class User(db.Model, SerializerMixin):
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
   
     events = db.relationship("Event", backref='user')
-    guests = db.relationship("Guest", secondary="event", backref="user", viewonly=True)
+    guests = db.relationship("Guest", secondary=user_guest_association, backref="users")
 
 class Guest(db.Model, SerializerMixin):
     __tablename__ = "guest"
@@ -27,7 +37,8 @@ class Guest(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
   
-    events = db.relationship('Event', backref='guest')
+    events = db.relationship('Event', secondary=guest_event_association, backref='guests')
+    
     
 
 class Event(db.Model, SerializerMixin):
@@ -38,8 +49,9 @@ class Event(db.Model, SerializerMixin):
     location=db.Column(db.String)
     date = db.Column(db.Date)
     time = db.Column(db.Time)
-    guest_id = db.Column(db.Integer, db.ForeignKey('guest.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    
 

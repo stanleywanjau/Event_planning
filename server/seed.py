@@ -1,26 +1,46 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import scoped_session, sessionmaker
-from models import db, User, Guest, Event
+from models import db, User, Guest, Event,guest_event_association,user_guest_association
 from app import app
 
 def create_seed_data():
+    # Delete existing data (optional)
     db.session.query(User).delete()
     db.session.query(Guest).delete()
     db.session.query(Event).delete()
+    db.session.query(guest_event_association).delete()
+    db.session.query(user_guest_association).delete()
     db.session.commit()
-    # Create sample data
-    user1 = User(username='Stanley', password='password1', email='stanley@example.com')
-    user2 = User(username='mueni', password='password2', email='mueni@example.com')
 
-    guest1 = Guest(name='dennis', email='dennis@example.com', status='invited')
-    guest2 = Guest(name='grace', email='grace@example.com', status='confirmed')
+    # Create users
+    users = [
+        User(username='user1', password='password1', email='user1@example.com'),
+        User(username='user2', password='password2', email='user2@example.com')
+    ]
 
-    event1 = Event(title='malomalo', date=datetime.now().date(),location="Nairobi", time=datetime.now().time(), user=user1, guest=guest1)
-    event1 = Event(title='malomalo', date=datetime.now().date(), location="Nairobi",time=datetime.now().time(), user=user1, guest=guest2)
-    event2 = Event(title='soulfes', date=datetime.now().date(),location="Kisimu" ,time=datetime.now().time(), user=user2, guest=guest2)
+    # Create guests
+    guests = [
+        Guest(name='Guest 1', email='guest1@example.com', status='invited'),
+        Guest(name='Guest 2', email='guest2@example.com', status='confirmed'),
+        Guest(name='Guest 3', email='guest3@example.com', status='invited'),
+        Guest(name='Guest 4', email='guest4@example.com', status='confirmed'),
+        Guest(name='Guest 5', email='guest5@example.com', status='invited'),
+        Guest(name='Guest 6', email='guest6@example.com', status='confirmed')
+    ]
 
-    db.session.add_all([user1, user2, guest1, guest2,event1,event2])
+    # Create events
+    event = Event(title='Event 1', location='Location 1', date=datetime.now().date(), time=datetime.now().time())
+
+    # Associate users with events and guests with events
+    event.user = users[0]  # Assigning the first user to the event for simplicity
+    event.guests.extend(guests) 
+    
+    # Add instances to the session
+    db.session.add_all(users)
+    db.session.add_all(guests)
+    db.session.add(event)
+
+    # Commit the session to persist the data
     db.session.commit()
 
 if __name__ == "__main__":
