@@ -1,39 +1,45 @@
 from datetime import datetime
-from sqlalchemy import MetaData
-from sqlalchemy_serializer import SerializerMixin
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import validates
+from sqlalchemy_serializer import SerializerMixin
 
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
+db = SQLAlchemy()
 
-db = SQLAlchemy(metadata=metadata)
+class User(db.Model, SerializerMixin):
+    __tablename__ = "user"
+  
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String)
+    password = db.Column(db.String)
+    email = db.Column(db.String)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+  
+    events = db.relationship("Event", backref='user')
+    guests = db.relationship("Guest", secondary="event", backref="user", viewonly=True)
 
-class User(db.Model,SerializerMixin):
-  __tablename__="Users"
+class Guest(db.Model, SerializerMixin):
+    __tablename__ = "guest"
   
-  id= db.Column(db.Integer,primary_key=True)
-  Username=db.Column(db.Integer)
-  password=db.Column(db.Integer)
-  Email=db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    email = db.Column(db.String)
+    status = db.Column(db.String)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
   
-  
-class Guest(db.Model,SerializerMixin):
-  __tablename__="guests"
-  
-  id = db.Column(db.Integer,primary_key=True)
-  Name=db.Column(db.Integer)
-  Email=db.Column(db.Integer)
-  Status=db.Column(db.Integer)
+    events = db.relationship('Event', backref='guest')
+    
 
-class Event(db.Model,SerializerMixin):
-  __tablename__="Events"
+class Event(db.Model, SerializerMixin):
+    __tablename__ = "event"
   
-  id=db.Column(db.Integer,primary_key=True)
-  Title=db.Column(db.Integer)
-  Date=db.Column(db.Date)
-  Time=db.Column(db.Time)
-  guest_id=db.Column(db.Integer)
-  user_id=db.Column(db.Integer)
-  
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String)
+    location=db.Column(db.String)
+    date = db.Column(db.Date)
+    time = db.Column(db.Time)
+    guest_id = db.Column(db.Integer, db.ForeignKey('guest.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
