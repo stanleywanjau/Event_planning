@@ -95,6 +95,28 @@ class EventsById(Resource):
             db.session.commit()
 
             return {"message": "Event and associated guests deleted successfully"}, 200
+    def patch(self,id):
+            event=Event.query.filter_by(id=id).first()
+            if not event:
+                return {"message": "Event not found"}, 404
+
+        
+            
+            data = request.json
+
+            # Check which fields to update
+            if 'location' in data:
+                event.location = data['location']
+            if 'time' in data:
+                event.time = datetime.strptime(data['time'], '%H:%M:%S').time()
+            if 'date' in data:
+                event.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            return {"message": "Event updated successfully"}, 200
+            
             
 api.add_resource(Events,'/events')
 api.add_resource(EventsById,'/event/<int:id>')
