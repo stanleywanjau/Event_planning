@@ -1,4 +1,4 @@
-// EventForm.js
+
 import React, { useState } from 'react';
 
 const EventForm = ({ onSubmit }) => {

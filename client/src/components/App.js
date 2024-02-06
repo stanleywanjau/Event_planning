@@ -1,4 +1,4 @@
-// App.js
+
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import EventList from './components/EventList';
@@ -11,17 +11,17 @@ const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = () => {
-    // Implement logic for user login
+    
     setLoggedIn(true);
   };
 
   const handleLogout = () => {
-    // Implement logic for user logout
+    
     setLoggedIn(false);
   };
 
   const handleCreateEvent = (newEvent) => {
-    // Add the new event to the local state
+    
     setEvents([...events, newEvent]);
   };
 

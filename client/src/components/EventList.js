@@ -1,4 +1,4 @@
-// EventList.js
+
 import React from 'react';
 
 const EventList = ({ events }) => {
