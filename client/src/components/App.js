@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import EventList from './components/EventList';
-import EventDetails from './components/EventDetails';
-import EventForm from './components/EventForm';
-import { Login, Register, Logout } from './components/Auth/Auth';
+import EventList from './EventList'; // Corrected import path
+import EventDetails from './EventDetails'; // Corrected import path
+import EventForm from './EventForm'; // Corrected import path
+import Login from './Auth/Login'; // Adjusted import path
+import Register from './Auth/Register'; // Adjusted import path
 
 const App = () => {
   const [events, setEvents] = useState([]); // manage events state
