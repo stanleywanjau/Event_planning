@@ -10,6 +10,8 @@ flask-sqlalchemy = "*"
 faker = "*"
 sqlalchemy-serializer = "*"
 flask-restful = "*"
+importlib-metadata = "6.0.0"
+importlib-resources = "5.10.0"
 
 [dev-packages]
 
