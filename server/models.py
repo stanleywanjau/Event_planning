@@ -37,7 +37,7 @@ class Guest(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
   
-    events = db.relationship('Event', secondary=guest_event_association, backref='guests')
+    events = db.relationship("Event", secondary=guest_event_association, backref="guests")
     
     
 
