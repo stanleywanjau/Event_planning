@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2d8b2661830875d18911412711305f3dbca2cab5a4420e48c1eaa34f3cc04fc3"
+            "sha256": "2d2b6e93f661105d46cfb9e316968c2083d28b37fe082ed86dae47f92bc12976"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.13"
+            "python_version": "3.8"
         },
         "sources": [
             {
@@ -49,12 +49,12 @@
         },
         "faker": {
             "hashes": [
-                "sha256:2b57f0256da6b45b7851dca87836ef5e2ae2fbb64d63d8697f1e47830d7b505d",
-                "sha256:fa6d969728ef3da6229da91267a1bd4e6b902044c4822012d4fc46c71bb92b26"
+                "sha256:8ca62b41b83bc6bcebe4ec5e7535405881fbd5ef69c6df933550de7111099575",
+                "sha256:f508c6a131f2cff8594f66f218f6674d3a78488455fd73ffd8c684efae4dc4d3"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==22.6.0"
+            "version": "==23.0.0"
         },
         "flask": {
             "hashes": [
