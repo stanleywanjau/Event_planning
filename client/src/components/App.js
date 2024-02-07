@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import EventList from './EventList'; // Corrected import path
-import EventDetails from './EventDetails'; // Corrected import path
-import EventForm from './EventForm'; // Corrected import path
-import Login from './Auth/Login'; // Adjusted import path
-import Register from './Auth/Register'; // Adjusted import path
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import EventList from './EventList'; 
+import EventDetails from './EventDetails';
+import EventForm from './EventForm'; 
+import Login from './Auth/Login'; 
+import Register from './Auth/Register'; 
 
 const App = () => {
   const [events, setEvents] = useState([]); // manage events state
@@ -27,7 +27,7 @@ const App = () => {
 
   return (
     <Router>
-      <Switch>
+      <Routes>
         <Route path="/" exact>
           <EventList events={events} />
         </Route>
@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/logout">
           <Logout onLogout={handleLogout} />
         </Route>
-      </Switch>
+      </Routes>
     </Router>
   );
 };
