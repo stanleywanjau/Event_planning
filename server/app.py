@@ -1,17 +1,76 @@
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, make_response,session
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
 from flask_restful import Api, Resource
 from datetime import datetime
 
 from models import db,User,Event,Guest
 
 app = Flask(__name__)
+app.secret_key=b'\xae\xf15\xb5\xfa\x8b\xafz%%\x19\xe8\xb4\xc5\x06\x8f'
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///Eventplanner.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 
 migrate=Migrate(app,db)
 db.init_app(app)
+bcrypt=Bcrypt(app)
 api = Api(app)
+
+
+class ClearSession(Resource):
+
+    def delete(self):
+    
+        session['page_views'] = None
+        session['user_id'] = None
+
+        return {}, 204
+
+class Signup(Resource):
+    
+    def post(self):
+
+        username = request.get_json()['username']
+        password = request.get_json()['password']
+
+        if username and password:
+
+            new_user = User(username=username)
+            new_user.password_hash = password
+            db.session.add(new_user)
+            db.session.commit()
+
+            session['user_id'] = new_user.id
+
+            return new_user.to_dict(), 201
+        return {'error': '422: Unprocessable Entity'}, 422
+
+class CheckSession(Resource):
+    def get(self):
+        if session.get('user_id'):
+            user=User.query.filter(User.id == session['user_id']).first()
+
+            return user.to_dict(), 200
+        return {}, 404
+        
+class Login(Resource):
+   def post(self):
+        username = request.get_json()['username']
+        password = request.get_json()['password']
+
+        user = User.query.filter(User.username == username).first()
+
+        if user.authenticate(password):
+            session['user_id'] = user.id
+            return user.to_dict(), 200
+
+        return {'error': '401: Unauthorized'}, 401
+
+class Logout(Resource):
+        def delete(self):
+
+            session['user_id'] = None
+            
 
 class Events(Resource):
     def get(self):
@@ -68,7 +127,7 @@ class EventsById(Resource):
             "users":event.user.username,
             "guests":[]
         }
-        print(event.guests)
+        
         
         for guest in event.guests:
             guest_data={
@@ -213,6 +272,11 @@ class EventGuest(Resource):
         return {"message": "Guest added to the event successfully"}, 200
         
             
+api.add_resource(ClearSession, '/clear', endpoint='clear')
+api.add_resource(Signup, '/signup', endpoint='signup')
+api.add_resource(CheckSession, '/check_session',endpoint='check_session')
+api.add_resource(Login, '/login', endpoint='login')
+api.add_resource(Logout, '/logout', endpoint='logout')
 api.add_resource(Events,'/events')
 api.add_resource(EventsById,'/event/<int:id>')
 api.add_resource(Guests,"/guests")

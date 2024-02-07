@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
-
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property
+from app import db, bcrypt
 db = SQLAlchemy()
 
 
@@ -26,6 +28,24 @@ class User(db.Model, SerializerMixin):
   
     events = db.relationship("Event", backref='user')
     guests = db.relationship("Guest", secondary=user_guest_association, backref="users")
+    
+    
+    @hybrid_property
+    def password_hash(self):
+        return self._password_hash
+
+
+    @password_hash.setter
+    def password_hash(self, password):
+        password_hash = bcrypt.generate_password_hash(
+            password.encode('utf-8'))
+        self._password_hash = password_hash.decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(
+            self._password_hash, password.encode('utf-8'))
+
+    
 
 class Guest(db.Model, SerializerMixin):
     __tablename__ = "guest"
