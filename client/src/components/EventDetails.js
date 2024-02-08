@@ -1,37 +1,91 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-import React from 'react';
-//  my eventdetails for the event details page
 const EventDetails = () => {
-  
-  const selectedEvent = {
-    id: 1,
-    title: 'eating commpetition',
-    details: 'This is a food event.',
-    date: '2024-02-13',
-    guests: ['Kanini', 'Joe'],
-    
+  const { id } = useParams();
+  const [event, setEvent] = useState(null);
+  const [formData, setFormData] = useState({
+    location: '',
+    date: '',
+    time: ''
+  });
+
+  useEffect(() => {
+    fetch(`/event/${id}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch event details');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setEvent(data);
+        setFormData({
+          location: data.location,
+          date: data.date,
+          time: data.time
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching event details:', error);
+      });
+  }, [id]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetch(`/event/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to update event');
+        }
+        console.log('Event updated successfully');
+        
+      })
+      .catch(error => {
+        console.error('Error updating event:', error);
+      });
+  };
+
+  if (!event) {
+    return <div>Loading...</div>; 
+  }
+
   return (
-    <div>
-      <h2>Event Details</h2>
-      <div>
-        <strong>Title:</strong> {selectedEvent.title}
+    <div className="event-details-container">
+      <div className="event-details">
+        <h2>{event.title}</h2>
+        <p>Location: {event.location}</p>
+        <p>Date: {event.date}</p>
+        <p>Time: {event.time}</p>
       </div>
-      <div>
-        <strong>Details:</strong> {selectedEvent.details}
-      </div>
-      <div>
-        <strong>Date:</strong> {selectedEvent.date}
-      </div>
-      <div>
-        <strong>Guests:</strong>
-        <ul>
-          {selectedEvent.guests.map((guest, index) => (
-            <li key={index}>{guest}</li>
-          ))}
-        </ul>
-      </div>
+      <form className="event-form" onSubmit={handleSubmit}>
+        <label>
+          Location:
+          <input type="text" name="location" value={formData.location} onChange={handleChange} />
+        </label>
+        <label>
+          Date:
+          <input type="date" name="date" value={formData.date} onChange={handleChange} />
+        </label>
+        <label>
+          Time:
+          <input type="time" name="time" value={formData.time} onChange={handleChange} />
+        </label>
+        <button type="submit">Update Event</button>
+      </form>
     </div>
   );
 };

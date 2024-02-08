@@ -1,20 +1,12 @@
 from flask import Flask, jsonify, request, make_response,session
-from flask_migrate import Migrate
-from flask_bcrypt import Bcrypt
-from flask_restful import Api, Resource
+from flask_restful import  Resource
 from datetime import datetime
+from Config import api,app
 
-from models import db,User,Event,Guest
+from models import User,Event,Guest
+from Config import db,api,app
 
-app = Flask(__name__)
-app.secret_key=b'\xae\xf15\xb5\xfa\x8b\xafz%%\x19\xe8\xb4\xc5\x06\x8f'
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///Eventplanner.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-
-migrate=Migrate(app,db)
-db.init_app(app)
-bcrypt=Bcrypt(app)
-api = Api(app)
+#
 
 
 class ClearSession(Resource):
@@ -74,7 +66,7 @@ class Logout(Resource):
 
 class Events(Resource):
     def get(self):
-        event=[{'id':event.id,"title":event.title,"location":event.location} for event in Event.query.all()]
+        event=[{'id':event.id,"title":event.title,"location":event.location,"date":event.date} for event in Event.query.all()]
         
         return make_response(jsonify(event),200)
     def post(self):
@@ -92,8 +84,8 @@ class Events(Resource):
 
         # Parse date and time strings into datetime objects
         try:
-            date = datetime.strptime(date, '%Y-%m-%d').date()
-            time = datetime.strptime(time, '%H:%M:%S').time()
+            date = datetime.strptime(date, '%d/%m/%Y').date()
+            time = datetime.strptime(time, '%I:%M:%S %p').time()
         except ValueError:
             return {"message": "Invalid date or time format"}, 400
 
@@ -167,9 +159,9 @@ class EventsById(Resource):
             if 'location' in data:
                 event.location = data['location']
             if 'time' in data:
-                event.time = datetime.strptime(data['time'], '%H:%M:%S').time()
+                event.time = data['date']
             if 'date' in data:
-                event.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+                event.date=data['date']
 
             # Commit the changes to the database
             db.session.commit()

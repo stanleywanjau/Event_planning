@@ -1,10 +1,12 @@
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.hybrid import hybrid_property
-from app import db, bcrypt
-db = SQLAlchemy()
+from Config import  bcrypt,db
+
+
+
+
 
 
 guest_event_association = db.Table('guest_event_association',
@@ -67,8 +69,8 @@ class Event(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     location=db.Column(db.String)
-    date = db.Column(db.Date)
-    time = db.Column(db.Time)
+    date = db.Column(db.String)
+    time = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)

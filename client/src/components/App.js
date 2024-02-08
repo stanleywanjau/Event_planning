@@ -1,53 +1,40 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {   Route, Routes } from 'react-router-dom';
 import EventList from './EventList'; 
 import EventDetails from './EventDetails';
-import EventForm from './EventForm'; 
-import Login from './Auth/Login'; 
-import Register from './Auth/Register'; 
+import EventForm from './EventForm';
+import GuestList from './GuestList';
+import GuestDetails from './GuestDetails'; 
+import Navbar from './Navbar';
+
 
 const App = () => {
-  const [events, setEvents] = useState([]); // manage events state
-  const [loggedIn, setLoggedIn] = useState(false);
+  // manage events state
 
-  const handleLogin = () => {
-    
-    setLoggedIn(true);
-  };
 
-  const handleLogout = () => {
-    
-    setLoggedIn(false);
-  };
-
-  const handleCreateEvent = (newEvent) => {
-    
-    setEvents([...events, newEvent]);
-  };
+  
 
   return (
-    <Router>
+    <>
+      <Navbar/>
       <Routes>
-        <Route path="/" exact>
-          <EventList events={events} />
+        <Route path="/" exact
+          element={<EventList />}>
         </Route>
-        <Route path="/events/:eventId">
-          <EventDetails />
+        <Route path="/event/:event/:id"
+          element={<EventDetails />}>
         </Route>
-        <Route path="/create-event">
-          {loggedIn ? <EventForm onSubmit={handleCreateEvent} /> : <Login onLogin={handleLogin} />}
+        <Route path="/create-event"
+          element={<EventForm />}>
         </Route>
-        <Route path="/login">
-          <Login onLogin={handleLogin} />
+        <Route path="/guests"
+          element={<GuestList />}>
         </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/logout">
-          <Logout onLogout={handleLogout} />
+        <Route path="/guest/:guestname/:id"
+          element={<GuestDetails />}>
         </Route>
       </Routes>
-    </Router>
+      </>
+    
   );
 };
 
