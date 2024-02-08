@@ -5,6 +5,7 @@ import EventForm from './EventForm';
 import GuestList from './GuestList';
 import GuestDetails from './GuestDetails'; 
 import Navbar from './Navbar';
+import GuestForm from './GuestForm';
 
 
 const App = () => {
@@ -31,6 +32,9 @@ const App = () => {
         </Route>
         <Route path="/guest/:guestname/:id"
           element={<GuestDetails />}>
+        </Route>
+        <Route path="/createguest"
+          element={<GuestForm />}>
         </Route>
       </Routes>
       </>
