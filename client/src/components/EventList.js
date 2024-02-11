@@ -1,28 +1,10 @@
-import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const EventList = () => {
-  const [events, setEvents] = useState([]);
+const EventList = ({events,handleDeleteEvent}) => {
+  
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch("/events")
-      .then((r) => r.json())
-      .then((data) => setEvents(data))
-      .catch((error) => console.error("Error fetching events:", error));
-  }, []);
-
-  function handleDeleteEvent(eventId) {
-    if (window.confirm("Are you sure you want to delete this event?")) {
-      fetch(`/event/${eventId}`, {
-        method: "DELETE",
-      }).then((r) => {
-        if (r.ok) {
-          setEvents((events) => events.filter((event) => event.id !== eventId));
-        }
-      });
-    }
-  }
+  
 
   const navigateToEventDetails = (eventTitle, eventId) => {
     navigate(`/event/${eventTitle}/${eventId}`);

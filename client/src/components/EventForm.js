@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 
-
-const EventForm = () => {
+const EventForm = ({user}) => {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [user_id, setUserId] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,7 +15,7 @@ const EventForm = () => {
       location,
       date,
       time,
-      user_id // Ensure user_id is sent as an integer
+      user_id :user.id
     };
   
     fetch('/events', {
@@ -33,11 +32,18 @@ const EventForm = () => {
       return response.json();
     })
     .then(data => {
-      console.log('Event created successfully:', data);
-      // Optionally, you can redirect the user to another page or show a success message
+    
+      setMessage(`${data.title} created successfully`);
+      // Optionally, you can redirect the user to another page or clear the form
+      setTitle('');
+      setLocation('');
+      setDate('');
+      setTime('');
+      
     })
     .catch(error => {
       console.error('Error creating event:', error);
+      setMessage('Failed to create event');
       // Handle error: show an error message to the user or log it
     });
   };
@@ -58,10 +64,9 @@ const EventForm = () => {
         <label>Time:
         <input type="time" value={time} onChange={(e) => setTime(e.target.value)} /></label>
         <br />
-        <label>User ID:</label>
-        <input type="text" value={user_id} onChange={(e) => setUserId(e.target.value)} required />
-        <br />
+        
         <button type="submit">Create Event</button>
+        {message && <p>{message}</p>} 
       </form>
     </div>
   );

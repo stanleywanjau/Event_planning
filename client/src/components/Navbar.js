@@ -1,19 +1,48 @@
 // Navbar.js
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ user, setUser }) => {
+  const navigate=useNavigate()
+  function handleLogoutClick() {
+    fetch("/logout", { method: "DELETE" }).then((r) => {
+      if (r.ok) {
+        setUser(null);
+        navigate(window.location.pathname='/login')
+      }
+    });
+  }
+
   return (
-    <nav className="navbar">
-      <ul className="navbar-nav">
-        <li className="nav-item">
-          <Link to="/guests" className="nav-link">Guest List</Link>
-        </li>
-        <li className="nav-item">
-          <Link to="/" className="nav-link">Event List</Link>
-        </li>
-      </ul>
-    </nav>
+    <header>
+      <div className="navbar">
+        {user ? (
+          <>
+            <h1>Welcome, {user.username}</h1>
+            <button onClick={handleLogoutClick}>Logout</button>
+            <div className="dropdown">
+              <button className="dropbtn">Guests</button>
+              <div className="dropdown-content">
+                <Link to="/guests">View Guests</Link>
+                <Link to="/createguest">Add Guest</Link>
+              </div>
+            </div>
+            <div className="dropdown">
+              <button className="dropbtn">Events</button>
+              <div className="dropdown-content">
+                <Link to="/events">View Events</Link>
+                <Link to="/create-event">Add Event</Link>
+                <Link to="/inviteguest">Invite Guest</Link>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <Link to="/login">login</Link>
+          </>
+        )}
+      </div>
+    </header>
   );
 };
 

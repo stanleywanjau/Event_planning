@@ -1,25 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const GuestList = () => {
-  const [guests, setGuests] = useState([]);
+const GuestList = ({guests,handleDeleteGuest}) => {
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch('/guests')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch guests');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setGuests(data);
-      })
-      .catch(error => {
-        console.error('Error fetching guests:', error);
-      });
-  }, []);
+  
 
   const handleGuestClick = (guestname,guestId) => {
     navigate(`/guest/${guestname}/${guestId}`);
@@ -29,24 +15,7 @@ const GuestList = () => {
     navigate(`/createguest`);
   };
 
-  const handleDeleteGuest = (guestId) => {
-    if (window.confirm('Are you sure you want to delete this guest?')) {
-      fetch(`/guest/${guestId}`, {
-        method: 'DELETE',
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to delete guest');
-          }
-          // Remove the deleted guest from the guests state
-          setGuests(guests.filter(guest => guest.id !== guestId));
-        })
-        .catch(error => {
-          console.error('Error deleting guest:', error);
-        });
-    }
-  };
-
+  
   return (
     <div className="guest-list-container">
       <h2>Guest List</h2>

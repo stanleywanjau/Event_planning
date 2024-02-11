@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 const GuestDetails = () => {
   const { id } = useParams();
   const [guest, setGuest] = useState(null);
-  const [newStatus, setNewStatus] = useState('');
+  
 
   useEffect(() => {
     fetch(`/guest/${id}`)

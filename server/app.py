@@ -23,6 +23,7 @@ class Signup(Resource):
     def post(self):
 
         username = request.get_json()['username']
+        
         password = request.get_json()['password']
 
         if username and password:

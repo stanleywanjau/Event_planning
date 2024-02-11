@@ -66,10 +66,16 @@ const EventDetails = () => {
   return (
     <div className="event-details-container">
       <div className="event-details">
-        <h2>{event.title}</h2>
+      <h2>{event.title}</h2>
         <p>Location: {event.location}</p>
         <p>Date: {event.date}</p>
         <p>Time: {event.time}</p>
+        <h2>Guests:</h2>
+        <ul className="guest-list">
+        {event?.guests?.map(guest => (
+          <li key={guest.id}>{guest.username}</li>
+          ))}
+        </ul>
       </div>
       <form className="event-form" onSubmit={handleSubmit}>
         <label>
