@@ -8,8 +8,8 @@ import GuestDetails from './GuestDetails';
 import Navbar from './Navbar';
 import GuestForm from './GuestForm';
 import EventGuest from './EventGuest'
-import RegisterForm from '../ authentication/RegistrationForm';
-import LoginForm from '../ authentication/LoginForm';
+// import RegisterForm from '../ authentication/RegistrationForm';
+// import LoginForm from '../ authentication/LoginForm';
 import Home from "../Home";
 
 const App = () => {
@@ -87,14 +87,14 @@ const App = () => {
   
 
   // If the user is not logged in, show login and registration forms
-  if (!user) {
-    return (
-      <Routes>
+  // if (!user) {
+  //   return (
+  //     <Routes>
         
-        <Route path="/" exact element={<RegisterForm setUser={setUser}/>}/>  
-        <Route path="/login" exact element={<LoginForm setUser={setUser}/>}/>
-      </Routes>
-    )}
+  //       <Route path="/" exact element={<RegisterForm setUser={setUser}/>}/>  
+  //       <Route path="/login" exact element={<LoginForm setUser={setUser}/>}/>
+  //     </Routes>
+  //   )}
   
 
   // If the user is logged in, show the content
