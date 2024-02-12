@@ -10,7 +10,7 @@ const EventList = ({events,handleDeleteEvent}) => {
     navigate(`/event/${eventTitle}/${eventId}`);
   };
   const create_event = () => {
-    navigate(`https://eventplanner-cf0e.onrender.com/create-event`);
+    navigate(`/create-event`);
   };
 
   return (
